@@ -5,3 +5,6 @@ This is the source code of my blog website % here comes the link to my blog %. T
 
 ## Implememntation
 This blog website is build upon [MEAN stack](https://en.wikipedia.org/wiki/MEAN_(software_bundle)) but without Angular, since the JS on the front end is simple and straightforward.
+
+## Deployment
+This blog website is now tested on [cloud9](https://c9.io/) work space, and it will be deployed on Amazon AWS after release.
