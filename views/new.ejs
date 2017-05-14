@@ -1,0 +1,39 @@
+<% include ./partials/header.ejs %>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-9" id="blog-list">
+            <div class="row">
+                <div class="col-md-12 blog-detail-div">
+                    <div>
+                        <form action="/blogs" method="POST">
+                            <div class="form-group">
+                                <label for="new-blog-title-input">Blog Title</label>
+                                <input type="text" class="form-control" name="blog[title]" id="new-blog-title-input" placeholder="title"></input>
+                            </div>
+                            <div class="form-group">
+                                <label for="new-blog-image-input">Image URL</label>
+                                <input type="text" class="form-control" name="blog[image]" id="new-blog-image-input" placeholder="image URL"> </input>
+                            </div>
+                            <div class="form-group">
+                                <label for="new-blog-file-input">Upload Image</label>
+                                <input type="file"  id="new-blog-file-input">
+                                <p class="help-block">Upload image is not supported yet.</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="new-blog-body-input">Blog Body</label>
+                                <textarea name="blog[body]" class="form-control" rows="20" id="new-blog-body-input"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-success">Publish</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3" id="side-bar">
+            
+        </div>
+    </div>
+</div>
+
+<% include ./partials/footer.ejs %>

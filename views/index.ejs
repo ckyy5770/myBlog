@@ -1,0 +1,41 @@
+<% include ./partials/header.ejs %>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-9" id="blog-list">
+            <div class="row">
+                <% blogs.forEach(function(blog){ %>
+                <div class="col-sm-12 col-md-12 blog-div">
+                    <div class="thumbnail">
+                        <div class="row">
+                            <div class="col-sm-4 col-md-4 col-lg-4 blog-div-img">
+                                <img class="img-responsive" src= <%= blog.image %> >
+                            </div>
+                            <div class="col-sm-8 col-md-8 col-lg-8 blog-div-text">
+                                <div>
+        	                        <span><%= blog.created.toDateString() %></span>
+    	                        </div>
+                                <div>
+                                    <h4 class="blog-title"> <%= blog.title %></h4>
+                                </div>
+                                <p><%- blog.body.substring(0, 200) %>...</p>
+                                <a class="btn btn-success" href="/blogs/<%= blog._id %>">Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <% }) %>
+            </div>
+        </div>
+        <div class="col-md-3" id="side-bar">
+            <div class="thumbnail">
+                <div>
+                    <h4 class="blog-title">Popular Posts</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<% include ./partials/footer.ejs %>
