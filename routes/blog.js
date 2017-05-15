@@ -5,30 +5,7 @@ var router = express.Router();
 var Blog = require("../models/blog");
 
 // verification functions -- middleware
-function isLoggedIn(req, res, next){
-    if(req.isAuthenticated()){
-        return next();
-    }else{
-        res.redirect("back");
-    }
-}
-function isAuthor(req, res, next){
-    if(req.isAuthenticated()){
-        Blog.findById(req.params.id, function(err,foundBlog){
-            if(err){
-                res.redirect("back");
-            }else{
-                if(foundBlog.author.id.equals(req.user._id)){
-                    return next();
-                }else{
-                    res.redirect("back");
-                }
-            }
-        });
-    }else{
-        res.redirect("back");
-    }
-}
+var middleware = require("../middleware/index");
 
 // index route
 router.get("/blogs",function(req, res){
@@ -41,11 +18,11 @@ router.get("/blogs",function(req, res){
     });
 });
 // new route
-router.get("/blogs/new", isLoggedIn, function(req, res){
+router.get("/blogs/new", middleware.isLoggedIn, function(req, res){
     res.render("new");
 });
 // create route
-router.post("/blogs", isLoggedIn, function(req, res){
+router.post("/blogs", middleware.isLoggedIn, function(req, res){
     req.body.blog.body = req.sanitize(req.body.blog.body);
     var newBlog = {
         title: req.body.blog.title,
@@ -75,7 +52,7 @@ router.get("/blogs/:id", function(req, res){
     });
 });
 // edit route
-router.get("/blogs/:id/edit", isAuthor, function(req, res){
+router.get("/blogs/:id/edit", middleware.isAuthor, function(req, res){
     Blog.findById(req.params.id, function(err,foundBlog){
         if(err){
             res.redirect("/blogs");
@@ -85,7 +62,7 @@ router.get("/blogs/:id/edit", isAuthor, function(req, res){
     });
 });
 // update route
-router.put("/blogs/:id", isAuthor, function(req, res){
+router.put("/blogs/:id", middleware.isAuthor, function(req, res){
     req.body.blog.body = req.sanitize(req.body.blog.body);
     Blog.findByIdAndUpdate(req.params.id, req.body.blog, function(err, updatedBlog){
         if(err){
@@ -96,7 +73,7 @@ router.put("/blogs/:id", isAuthor, function(req, res){
    });
 });
 // delete route
-router.delete("/blogs/:id", isAuthor, function(req, res){
+router.delete("/blogs/:id", middleware.isAuthor, function(req, res){
     Blog.findByIdAndRemove(req.params.id, function(err){
         if(err){
             res.redirect("/blogs");
