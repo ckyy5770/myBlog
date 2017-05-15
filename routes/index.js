@@ -14,6 +14,10 @@ router.get("/register", function(req, res){
    res.render("register"); 
 });
 router.post("/register", function(req, res){
+    if(req.body.invitation!=process.env.INVITATIONCODE){
+        req.flash("error", "The invitation code does not exist. Please send a email to iloveyoukcl5770@gmail.com to get one.");
+        return res.redirect('/register');
+    }
     User.register(new User({username: req.body.username}), req.body.password, function(err, user){
         if(err){
             req.flash("error", err.message);

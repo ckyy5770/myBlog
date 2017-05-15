@@ -16,9 +16,12 @@ var indexRoutes = require("./routes/index");
 var User = require("./models/user");
 var Blog = require("./models/blog");
 
+// connect database
+var url = process.env.DATABASEURL || "mongodb://localhost/chuilianblog";
+mongoose.connect(url);
+
 // app config
 var app = express();
-mongoose.connect("mongodb://localhost/chuilianblog");
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended: true}));
@@ -28,7 +31,7 @@ app.use(flash());
 
 // passport and session config
 app.use(require("express-session")({
-    secret: "test-secret",
+    secret: process.env.PASSPORTSECRET,
     resave: false,
     saveUninitialized: false
 }));
@@ -39,8 +42,8 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 // testing db seeds config
-var db_test_config = require("./db_test_config");
-db_test_config();
+//var db_test_config = require("./db_test_config");
+//db_test_config();
 
 // middleware for passing current user to every route
 app.use(function(req, res, next){
