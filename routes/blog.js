@@ -35,9 +35,11 @@ router.post("/blogs", middleware.isLoggedIn, function(req, res){
     }
     Blog.create(newBlog, function(err, newBlog){
         if(err){
+            req.flash("error", "Sorry, blog cannot be created! (Something went wrong with database)");
             res.render("new");
         }else{
-            res.redirect("/blogs");
+            req.flash("success", "You have successfuly created the blog!");
+            res.redirect("/blogs/" + newBlog._id);
         }
     });
 });
@@ -45,7 +47,8 @@ router.post("/blogs", middleware.isLoggedIn, function(req, res){
 router.get("/blogs/:id", function(req, res){
     Blog.findById(req.params.id, function(err,foundBlog){
         if(err){
-            res.redirect("/blogs");
+            req.flash("error", "Blog not found!");
+            res.redirect("back");
         }else{
             res.render("show",{blog: foundBlog});
         }
@@ -55,7 +58,8 @@ router.get("/blogs/:id", function(req, res){
 router.get("/blogs/:id/edit", middleware.isAuthor, function(req, res){
     Blog.findById(req.params.id, function(err,foundBlog){
         if(err){
-            res.redirect("/blogs");
+            req.flash("error", "Blog not found!");
+            res.redirect("back");
         }else{
             res.render("edit",{blog: foundBlog});
         }
@@ -66,8 +70,10 @@ router.put("/blogs/:id", middleware.isAuthor, function(req, res){
     req.body.blog.body = req.sanitize(req.body.blog.body);
     Blog.findByIdAndUpdate(req.params.id, req.body.blog, function(err, updatedBlog){
         if(err){
-            res.redirect("/blogs");
+            req.flash("error", "Blog not found!");
+            res.redirect("back");
         }else{
+            req.flash("success", "You have successfuly updated the blog!");
             res.redirect("/blogs/" + req.params.id);
         }
    });
@@ -76,8 +82,10 @@ router.put("/blogs/:id", middleware.isAuthor, function(req, res){
 router.delete("/blogs/:id", middleware.isAuthor, function(req, res){
     Blog.findByIdAndRemove(req.params.id, function(err){
         if(err){
+            req.flash("error", "Blog not found!");
             res.redirect("/blogs");
         }else {
+            req.flash("success", "You have successfuly deleted the blog!");
             res.redirect("/blogs");
         }
     });
