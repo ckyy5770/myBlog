@@ -23,7 +23,7 @@ function config(){
                         }
                     });
                     // make some fake blog
-                    for(var i=0; i<20; i++){
+                    for(var i=0; i<0; i++){
                         Blog.create({
                             title: "Test Blog" + i.toString(),
                             image: "http://dreamicus.com/data/cat/cat-01.jpg",

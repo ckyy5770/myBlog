@@ -4,12 +4,30 @@ var router = express.Router();
 // models
 var Blog = require("../models/blog");
 
-// verification function
+// verification functions -- middleware
 function isLoggedIn(req, res, next){
     if(req.isAuthenticated()){
         return next();
+    }else{
+        res.redirect("back");
     }
-    res.redirect("/blogs");
+}
+function isAuthor(req, res, next){
+    if(req.isAuthenticated()){
+        Blog.findById(req.params.id, function(err,foundBlog){
+            if(err){
+                res.redirect("back");
+            }else{
+                if(foundBlog.author.id.equals(req.user._id)){
+                    return next();
+                }else{
+                    res.redirect("back");
+                }
+            }
+        });
+    }else{
+        res.redirect("back");
+    }
 }
 
 // index route
@@ -29,7 +47,16 @@ router.get("/blogs/new", isLoggedIn, function(req, res){
 // create route
 router.post("/blogs", isLoggedIn, function(req, res){
     req.body.blog.body = req.sanitize(req.body.blog.body);
-    Blog.create(req.body.blog, function(err, newBlog){
+    var newBlog = {
+        title: req.body.blog.title,
+        image: req.body.blog.image,
+        body: req.body.blog.body,
+        author: {
+            id:  req.user._id,
+            username: req.user.username 
+        }
+    }
+    Blog.create(newBlog, function(err, newBlog){
         if(err){
             res.render("new");
         }else{
@@ -48,7 +75,7 @@ router.get("/blogs/:id", function(req, res){
     });
 });
 // edit route
-router.get("/blogs/:id/edit", isLoggedIn, function(req, res){
+router.get("/blogs/:id/edit", isAuthor, function(req, res){
     Blog.findById(req.params.id, function(err,foundBlog){
         if(err){
             res.redirect("/blogs");
@@ -58,7 +85,7 @@ router.get("/blogs/:id/edit", isLoggedIn, function(req, res){
     });
 });
 // update route
-router.put("/blogs/:id", isLoggedIn, function(req, res){
+router.put("/blogs/:id", isAuthor, function(req, res){
     req.body.blog.body = req.sanitize(req.body.blog.body);
     Blog.findByIdAndUpdate(req.params.id, req.body.blog, function(err, updatedBlog){
         if(err){
@@ -69,7 +96,7 @@ router.put("/blogs/:id", isLoggedIn, function(req, res){
    });
 });
 // delete route
-router.delete("/blogs/:id", isLoggedIn, function(req, res){
+router.delete("/blogs/:id", isAuthor, function(req, res){
     Blog.findByIdAndRemove(req.params.id, function(err){
         if(err){
             res.redirect("/blogs");

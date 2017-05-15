@@ -13,11 +13,16 @@
                         <div style="text-align: right">
     	                    <span><%= blog.created.toDateString() %></span>
 	                    </div>
+	                    <div style="text-align: right">
+    	                    <span><%= blog.author.username %></span>
+	                    </div>
                         <p><%- blog.body %></p>
-                        <a  class="btn btn-primary" href="/blogs/<%= blog._id %>/edit">Edit</a>
-                        <form id="blog-delete-form" action="/blogs/<%= blog._id %>?_method=DELETE" method="POST" style="display: inline">
-                            <button class="btn btn-danger">Delete</button>
-                        </form>
+                        <% if(currentUser && blog.author.id.equals(currentUser._id)){ %>
+                            <a  class="btn btn-primary" href="/blogs/<%= blog._id %>/edit">Edit</a>
+                            <form id="blog-delete-form" action="/blogs/<%= blog._id %>?_method=DELETE" method="POST" style="display: inline">
+                                <button class="btn btn-danger">Delete</button>
+                            </form>
+                        <% }%>
                     </div>
                 </div>
             </div>
